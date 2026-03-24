@@ -2,51 +2,53 @@
 
 This repository stores the files and instructions for configuring Everpure storage for MOC clusters.
 
-## Prerequisites 
+## Prerequisites
 
-To reach the Pure Storage webpage running in MOC you will need to have login creds created for you ahead of time. 
+To access the Pure Storage web interface running in MOC, you must have login credentials created for you ahead of time.
 
-## Configuring a storage server
+## Getting Started
 
-In order to enable a storage endpoint accesible from an OpenShift cluster, you must first configure a handful of critical items in Pure. 
+To enable a storage endpoint accessible from an OpenShift cluster, you must first configure several critical items in Pure:
 
-1. Choose a realm under which to work (Or create a new realm if needed)
-2. Create a filesystem 
+1. Choose a realm under which to work (or create a new realm if needed)
+2. Create a filesystem
 3. Create a server
-4. Create a filesystem export from server configuration page
-5. Create an interface on the DATA subnet
+4. Create a filesystem export from the server configuration page
+5. Create an interface on the data subnet
 6. Configure DNS for the server created above
-7. Create a new user for the cluster and attach the storage_admin policy
+7. Create a new user for the cluster and attach the `storage_admin` policy
 
-## Install Portworx on OCP 
+## Install Portworx on OCP
 
-### Prerequisites 
+### Prerequisites
 
-1. Create an account at [https://central.portworx.com/](https://central.portworx.com/)
-2. See [portworx system requirements](https://docs.portworx.com/portworx-csi/system-requirements#network-requirements)
+1. Create an account at https://central.portworx.com/
+2. Review the Portworx system requirements: https://docs.portworx.com/portworx-csi/system-requirements#network-requirements
 
-### Generate Portworx spec
+### Generate Portworx Spec
 
-1. At [central.portworx.com](central.portworx.com) create a new yaml spec by selecting PX-CSI and fill out the OCP cluster details. 
-2. Aplly the file in the cluster.
+1. At https://central.portworx.com, create a new YAML spec by selecting PX-CSI and filling out the OCP cluster details.
+2. Apply the generated file to the cluster.
 
-Here is a sample yaml with some options and descriptions
+Here is a sample YAML with some options and descriptions:
 
-### Install Portworx operator in cluster
+### Install Portworx Operator in Cluster
 
-In the OCP cluster create the namespace:
+In the OCP cluster, create the namespace:
 `oc create namespace portworx`
 
-See [Portworx csi system requirements](https://docs.portworx.com/portworx-csi/system-requirements) prior to installing the operator. 
+Review the Portworx CSI system requirements prior to installing the operator:
+https://docs.portworx.com/portworx-csi/system-requirements
 
-Install the operator using the OCP operators tab, installing the operator in namespace portworx. 
+Install the operator using the OCP Operators tab, selecting the `portworx` namespace.
 
-### Validate Portworx operator install
+### Validate Portworx Operator Installation
 
-Verify operator pods are running: 
+Verify operator pods are running:
 `oc get pods -n portworx -o wide | grep -e portworx -e px`
 
-Get status of portworx cluster:
+
+Get the status of the Portworx cluster:
 `oc get stc -n portworx`
 
 Check for newly created storage classes: 
@@ -68,5 +70,11 @@ px-fb-direct-access-nfsv4                        pxd.portworx.com               
 ```
 
 
+### Creating a User
 
+In the Pure GUI, open the options menu and select `Users`.
+
+Create a new user and complete the form. Once the user account is created, assign the `storage_admin` policy from the list.
+
+This account can now create and manage storage resources.
 
