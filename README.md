@@ -6,7 +6,7 @@ This repository stores the files and instructions for configuring Everpure stora
 
 To access the Pure Storage web interface running in MOC, you must have login credentials created for you ahead of time.
 
-## Getting Started
+## Quickstart
 
 To enable a storage endpoint accessible from an OpenShift cluster, you must first configure several critical items in Pure:
 
@@ -17,6 +17,7 @@ To enable a storage endpoint accessible from an OpenShift cluster, you must firs
 - Create a filesystem export from the server configuration page
 - Create an interface on the data subnet
 - Configure DNS for the server created above
+- Install/Configure Portworx operator
 
 ### Creating a User
 
@@ -54,7 +55,36 @@ Once that is created, click your filesystem and click the plus iocn in the file 
 1. At https://central.portworx.com, create a new YAML spec by selecting PX-CSI and filling out the OCP cluster details.
 2. Apply the generated file to the cluster.
 
-Here is a sample YAML with some options and descriptions:
+3. Create a file called `pure.json`, which will look like this:
+```
+  {
+    "FlashBlades": [
+      {
+    "MgmtEndPoint": "FB end point 1",
+    "APIToken": "<api-token-for-fb-management-endpoint1>",
+    "NFSEndPoint": "<fb-nfs-endpoint>",
+    "Labels": {
+      "topology.portworx.io/zone": "<zone-1>",
+      "topology.portworx.io/region": "<region-1>"
+    }
+  },
+    {
+    "MgmtEndPoint": "FB end point 2",
+    "APIToken": "<api-token-for-fb-management-endpoint2>",
+    "NFSEndPoint": "<fb-nfs-endpoint2>",
+    "Labels": {
+      "topology.portworx.io/zone": "<zone-1>",
+      "topology.portworx.io/region": "<region-2>"
+    }
+  }
+  ]
+  }
+```
+
+4. Create a secret with the `pure.json` file:
+`oc create secret generic px-pure-secret --namespace <stc-namespace> --from-file=pure.json=<file path>`
+
+This will hand the Flashblade details to the portworx operator, allowing a connection.
 
 ### Install Portworx Operator in Cluster
 
@@ -93,3 +123,74 @@ px-fb-direct-access-nfsv3                        pxd.portworx.com               
 px-fb-direct-access-nfsv4                        pxd.portworx.com                        Delete          Immediate              true                   4d21h
 ```
 
+These are the 3 options you can use out of the box:
+```
+px-csi-db                                        pxd.portworx.com                        Delete          Immediate              true                   4d4h
+px-fb-direct-access-nfsv3                        pxd.portworx.com                        Delete          Immediate              true                   4d21h
+px-fb-direct-access-nfsv4                        pxd.portworx.com                        Delete          Immediate              true                   4d21h
+```
+
+### [Create a Custom `storageClass`](https://docs.portworx.com/portworx-csi/provision-storage/dynamic-provisioning/flashblade-file-systems#optional-create-a-custom-storageclass) to Consume Pure Storage
+
+To configure a single NFS endpoint, use the following StorageClass specification:
+`**NOTE**: This assumes the nfs endpoint is the same as the one provided to the k8s secret px-pure-secret`
+
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: portworx-csi-fb
+provisioner: pxd.portworx.com
+parameters:
+  backend: "pure_file"
+  pure_export_rules: "*(rw)"
+mountOptions:
+  - nfsvers=3
+  - tcp
+allowVolumeExpansion: true
+allowedTopologies:
+  - matchLabelExpressions:
+    - key: topology.portworx.io/zone
+      values:
+        - <zone-1>
+    - key: topology.portworx.io/region
+      values:
+        - <region-1>
+```
+
+### Provisioning Storage Volumes
+
+There are 2 different methods to provision storage in a Pure server:
+
+1. [static provisioning of volumes](https://docs.portworx.com/portworx-csi/provision-storage/static-provisioning)
+
+With this method, you must first create a filesystem in Pure first.
+
+To import an existing volume, you add annotations to your PVC that specify:
+
+- portworx.io/pure-volume-name (required): The name of the existing volume on the Everpure storage array.
+	- For FlashBlade file systems: filesystem_name
+- portworx.io/pure-array-id (optional): The ID of the array where the volume exists. Use this to specify which array to import the volume from when multiple arrays are connected to your cluster.
+
+The `pvc` spec will look something like:
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: preprovisioned-fb-pvc
+  annotations:
+    portworx.io/pure-volume-name: "<existing-filesystem-name>"
+    # portworx.io/pure-array-id: "<your-flashblade-id>"  # Optional: specify array ID if you want to import the volume from specific array
+spec:
+  storageClassName: px-fb-direct-access-nfsv3
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti  # Must match the size of the existing file system on FlashBlade
+```
+
+2. [dyanamic provisioning of volumes](https://docs.portworx.com/portworx-csi/provision-storage/dynamic-provisioning) (default)
+
+This is the default way to manage creation and allocation of pvcs. A `pvc` created in OpenShift will create a filesystem within the flashblade server using the chosen `storageClass`.
