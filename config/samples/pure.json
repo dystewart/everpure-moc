@@ -1,0 +1,9 @@
+  {
+    "FlashBlades": [
+      {
+        "MgmtEndPoint": "<flashblade-mgmt-ip>",
+        "APIToken": "<flashblade-generated-api>",
+        "NFSEndPoint": "flashblade-nfs-server"
+      }
+    ]
+  }
