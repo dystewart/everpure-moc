@@ -160,7 +160,9 @@ allowedTopologies:
 
 ### Provisioning Storage Volumes
 
-There are 2 different methods to provision storage in a Pure server:
+#### Filesystem Storage (NFS)
+
+There are 2 different methods to provision storage in a Pure filesystem server:
 
 1. [static provisioning of volumes](https://docs.portworx.com/portworx-csi/provision-storage/static-provisioning)
 
@@ -194,6 +196,10 @@ spec:
 2. [dyanamic provisioning of volumes](https://docs.portworx.com/portworx-csi/provision-storage/dynamic-provisioning) (default)
 
 This is the default way to manage creation and allocation of pvcs. A `pvc` created in OpenShift will create a filesystem within the flashblade server via the chosen `storageClass`.
+
+#### S3 Storage
+
+
 
 ### Pure1
 
