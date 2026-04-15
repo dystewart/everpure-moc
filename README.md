@@ -199,6 +199,6 @@ This is the default way to manage creation and allocation of pvcs. A `pvc` creat
 
 [Pure1](https://pure1.purestorage.com/) is an integrated management suite available by web browser, provided by Everpure. Accounts and permissions are managed by the Everpure team, and any users will have to register before being able to access this service. 
 
-There are lots of built in tools here from automation, Everpure software updates, data security, and a [ticket based support system](https://supportcenter.purestorage.com/) which we have already made use of. 
+There are lots of built in tools here from automation, Everpure software updates, data security, and a [ticket based support system](https://supportcenter.purestorage.com/) which we have already made use of. Responses were reasonably quick from the Everpure service team with multiple reponses per day and a 1-on-1 debug session in less than 24hrs. 
 
 TODO: create a separate document for managing Pure1 if necessary & and determine how we can leverage it. 
