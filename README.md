@@ -166,7 +166,7 @@ There are 2 different methods to provision storage in a Pure server:
 
 With this method, you must first create a filesystem in Pure first.
 
-To import an existing volume, you add annotations to your PVC that specify:
+To import an existing volume, you must add annotations to your PVC that specify:
 
 - portworx.io/pure-volume-name (required): The name of the existing volume on the Everpure storage array.
 	- For FlashBlade file systems: filesystem_name
@@ -193,4 +193,12 @@ spec:
 
 2. [dyanamic provisioning of volumes](https://docs.portworx.com/portworx-csi/provision-storage/dynamic-provisioning) (default)
 
-This is the default way to manage creation and allocation of pvcs. A `pvc` created in OpenShift will create a filesystem within the flashblade server using the chosen `storageClass`.
+This is the default way to manage creation and allocation of pvcs. A `pvc` created in OpenShift will create a filesystem within the flashblade server via the chosen `storageClass`.
+
+### Pure1
+
+[Pure1](https://pure1.purestorage.com/) is an integrated management suite available by web browser, provided by Everpure. Accounts and permissions are managed by the Everpure team, and any users will have to register before being able to access this service. 
+
+There are lots of built in tools here from automation, Everpure software updates, data security, and a [ticket based support system](https://supportcenter.purestorage.com/) which we have already made use of. 
+
+TODO: create a separate document for managing Pure1 if necessary & and determine how we can leverage it. 
