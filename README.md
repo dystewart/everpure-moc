@@ -82,7 +82,7 @@ Once that is created, click your filesystem and click the plus iocn in the file 
 ```
 
 4. Create a secret with the `pure.json` file:
-`oc create secret generic px-pure-secret --namespace <stc-namespace> --from-file=pure.json=<file path>`
+`oc create secret generic px-pure-secret --namespace portworx --from-file=pure.json=<file path>`
 
 This will hand the Flashblade details to the portworx operator, allowing a connection.
 
@@ -202,3 +202,7 @@ This is the default way to manage creation and allocation of pvcs. A `pvc` creat
 There are lots of built in tools here from automation, Everpure software updates, data security, and a [ticket based support system](https://supportcenter.purestorage.com/) which we have already made use of. Responses were reasonably quick from the Everpure service team with multiple reponses per day and a 1-on-1 debug session in less than 24hrs. 
 
 TODO: create a separate document for managing Pure1 if necessary & and determine how we can leverage it. 
+
+### Troubleshooting 
+
+We ran into issues with `pvc`s created under portworx `storageClasses` mounting in `pod`s. In pod events this manifested as an `event` with the error message: "No valid backend found for ArrayID d663994a-a52c-49ac-bcff-2b4de120192d: not found". This may have been related to network asymmetry, though fixing the network issue was not an immediate fix. Eventually, bouncing the px-pure-csi-controller 'pods' one at a time in the portworx `namespace` did result in `pvc`s mounting and `pod`s creating. More info can be found in this [ticket](https://supportcenter.purestorage.com/cases/1f896c5f3b408f18b7a1c41864e45a2f). 
