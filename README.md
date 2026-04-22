@@ -171,7 +171,7 @@ With this method, you must first create a filesystem in Pure first.
 To import an existing volume, you must add annotations to your PVC that specify:
 
 - portworx.io/pure-volume-name (required): The name of the existing volume on the Everpure storage array.
-	- For FlashBlade file systems: filesystem_name
+  - For FlashBlade file systems: filesystem_name
 - portworx.io/pure-array-id (optional): The ID of the array where the volume exists. Use this to specify which array to import the volume from when multiple arrays are connected to your cluster.
 
 The `pvc` spec will look something like:
