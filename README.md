@@ -199,7 +199,52 @@ This is the default way to manage creation and allocation of pvcs. A `pvc` creat
 
 #### S3 Storage
 
+To attach an s3 storage bucket to an OpenShift deployment the following must be done:
 
+In the Pure server:
+
+1. In the `Object Store` menu under storage, create a new account 
+2. Create a new account export assigning the appropriate export policy. 
+3. Click on the newly created account and create a new user
+4. Click on the newly created user and create a new accessKey
+5. Save the accessKey and accessKeyID 
+
+Login to the OCP cluster and create a secret with all the s3 info:
+
+```
+oc create secret generic s3-access-secret \
+  --from-literal=AWS_ACCESS_KEY_ID='<ACCESS_KEY>' \
+  --from-literal=AWS_SECRET_ACCESS_KEY='<SECRET_KEY>' \
+  --from-literal=AWS_ENDPOINT_URL=<DATA_VIP> \
+
+```
+
+Confirm access using a pod like the one below:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: s3-debug
+spec:
+  restartPolicy: Never
+  containers:
+  - name: aws-cli
+    image: amazon/aws-cli:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - sleep infinity
+    envFrom:
+    - secretRef:
+        name: s3-access-secret
+```
+
+In the pod run: `aws --endpoint-url="$AWS_ENDPOINT_URL" --no-verify-ssl s3 ls`
+
+If the connection is successful you'll see your bucket, in this case named test:
+```
+2026-04-15 16:56:30 test
+```
 
 ### Pure1
 
