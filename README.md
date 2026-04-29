@@ -246,11 +246,15 @@ If the connection is successful you'll see your bucket, in this case named test:
 2026-04-15 16:56:30 test
 ```
 
+There is no direct csi object provided by Portworx to configure/claim S3 buckets at this time. Communication to S3 buckets must be handled directly by making API calls. More information can be found in the [Flashblade Object Store Documentation](https://support.purestorage.com/bundle/m_purityfb_rest_api/page/FlashBlade/Purity_FB/PurityFB_REST_API/S3_Object_Store_REST_API/topics/concept/c_flashblade_object_store_documentation_s3_api.html)
+
 ### Pure1
 
 [Pure1](https://pure1.purestorage.com/) is an integrated management suite available by web browser, provided by Everpure. Accounts and permissions are managed by the Everpure team, and any users will have to register before being able to access this service. 
 
 There are lots of built in tools here from automation, Everpure software updates, data security, and a [ticket based support system](https://supportcenter.purestorage.com/) which we have already made use of. Responses were reasonably quick from the Everpure service team with multiple reponses per day and a 1-on-1 debug session in less than 24hrs. 
+
+Security assesments are available from here and CVEs are listed here. 
 
 TODO: create a separate document for managing Pure1 if necessary & and determine how we can leverage it. 
 
