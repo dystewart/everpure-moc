@@ -63,6 +63,7 @@ Once that is created, click your filesystem and click the plus iocn in the file 
     "MgmtEndPoint": "FB end point 1",
     "APIToken": "<api-token-for-fb-management-endpoint1>",
     "NFSEndPoint": "<fb-nfs-endpoint>",
+    "Realm": "your realm",
     "Labels": {
       "topology.portworx.io/zone": "<zone-1>",
       "topology.portworx.io/region": "<region-1>"
@@ -72,6 +73,7 @@ Once that is created, click your filesystem and click the plus iocn in the file 
     "MgmtEndPoint": "FB end point 2",
     "APIToken": "<api-token-for-fb-management-endpoint2>",
     "NFSEndPoint": "<fb-nfs-endpoint2>",
+    "Realm": "your realm",
     "Labels": {
       "topology.portworx.io/zone": "<zone-1>",
       "topology.portworx.io/region": "<region-2>"
@@ -247,6 +249,31 @@ If the connection is successful you'll see your bucket, in this case named test:
 ```
 
 There is no direct csi object provided by Portworx to configure/claim S3 buckets at this time. Communication to S3 buckets must be handled directly by making API calls. More information can be found in the [Flashblade Object Store Documentation](https://support.purestorage.com/bundle/m_purityfb_rest_api/page/FlashBlade/Purity_FB/PurityFB_REST_API/S3_Object_Store_REST_API/topics/concept/c_flashblade_object_store_documentation_s3_api.html)
+
+
+### Configuring Pure api Client
+
+#### (Option 1: via Pure GUI)
+
+Locally run:
+
+`openssl genrsa -out fa2xprivate.pem 2048`
+
+`openssl rsa -in fa2xprivate.pem -pubout`
+
+In the Pure gui, navigate to 'settings->API Clients'. Create a new api client using the public key created above. 
+
+#### (Option 2: via Pure api)
+
+Locally run:
+
+`openssl genrsa -out fa2xprivate.pem 2048`
+
+`openssl rsa -in fa2xprivate.pem -pubout`
+
+SSH into flashBlade.
+
+
 
 ### Pure1
 
